@@ -1,0 +1,46 @@
+<!--suppress ALL -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+    <camel:routeContext id="com.backbase.portal.integration.service.bne.common" xmlns="http://camel.apache.org/schema/spring">
+
+        <route id="mx.com.bne.common.headers">
+            <from uri="direct:/v1/headers"/>
+            <!-- Added BackbaseUserLocation to excludePattern to create a temporal mock independient session -->
+            <removeHeaders pattern="CamelHttp*" excludePattern="CamelHttpMethod|BackbaseUserLocation|Accept-Language"/>
+            <setHeader headerName="Content-Type">
+                <simple> application/json </simple>
+            </setHeader>
+        </route>
+
+        <route id="mx.com.bne.common.headers.login">
+            <from uri="direct:/v1/headers/login"/>
+            <!-- Added BackbaseUserLocation to excludePattern to create a temporal mock independient session -->
+            <removeHeaders pattern="CamelHttp*" excludePattern="CamelHttpMethod|BackbaseUserLocation|Accept-Language"/>
+            <setHeader headerName="Content-Type">
+                <simple> application/json </simple>
+            </setHeader>
+        </route>
+
+        <route id="mx.com.bne.common.baseuri">
+            <from uri="direct:/v1/baseuri"/>
+            <removeHeaders pattern="*" excludePattern="Accept|Accept-Language|Authorization|BackbaseUserLocation|Businesscode|businessCode|CamelHttpMethod|CamelHttpPath|CamelHttpResponseCode|cnnMobile|Channelid|channelId|client_id|Content-Type|Countrycode|EventId|Eventid|eventId|mobile|path|sid|uuid|Sid|transaction|Uuid|SID|UUID|countryCode|businessCode"/>
+            <bean ref="bodyLogger" method="request"/>
+                    <to uri="{{citibanamex.bne.server.protocol.secure}}://{{citibanamex.bne.server.host}}?throwExceptionOnFailure=false"/>
+            <bean ref="bodyLogger" method="response"/>
+        </route>
+
+        <route id="mx.com.bne.common.baseuri.login">
+            <from uri="direct:/v1/baseuri/login"/>
+            <removeHeaders pattern="*" excludePattern="Accept|Accept-Language|Authorization|BackbaseUserLocation|Businesscode|businessCode|CamelHttpMethod|CamelHttpPath|CamelHttpResponseCode|cnnMobile|Channelid|channelId|client_id|Content-Type|Countrycode|EventId|Eventid|eventId|mobile|path|sid|uuid|Sid|transaction|Uuid|SID|UUID"/>
+            <bean ref="bodyLogger" method="request"/>
+            <to uri="{{citibanamex.bne.server.protocol.secure}}://{{citibanamex.bne.server.host}}?throwExceptionOnFailure=false"/>
+            <bean ref="bodyLogger" method="response"/>
+        </route>
+
+    </camel:routeContext>
+</beans>

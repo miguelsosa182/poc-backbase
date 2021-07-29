@@ -1,0 +1,103 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <!-- <camel:routeContext id="com.backbase.portal.integration.service.bne.auth"
+                        xmlns="http://camel.apache.org/schema/spring"> -->
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
+        <route id="mx.com.bne.login">
+            <from uri="restlet:/api/v1/public/channels/bne/legacy/authenticate/login?restletMethod=POST" />
+            <removeHeaders pattern="*" excludePattern="Accept|Accept-Language|Authorization|BackbaseUserLocation|Businesscode|CamelHttpMethod|CamelHttpPath|cnnMobile|channelId|client_id|Content-Type|Countrycode|mobile|sid|uuid|Sid|Uuid|SID|UUID"/>
+            <to uri="direct:/v1/headers/login"/>
+
+            <setHeader headerName="CamelHttpPath">
+                <simple>/v1/channels/bne/legacy/authenticate/login</simple>
+            </setHeader>
+
+            <to uri="direct:/v1/baseuri"/>
+
+            <choice>
+                <when>
+                    <simple>${header.CamelHttpResponseCode} == 200</simple>
+                    <to uri="direct:/v1/login/session"/>
+                </when>
+            </choice>
+
+
+
+        </route>
+
+        <route id="mx.com.bne.logout">
+            <from uri="restlet:/api/v1/private/channels/bne/legacy/authenticate/login?restletMethod=GET" />
+
+            <to uri="direct:/v1/common/logout"/>
+        </route>
+
+        <route id="mx.com.bne.logout.direct">
+            <from uri="direct:/v1/common/logout"/>
+            <to uri="direct:/v1/headers"/>
+
+            <setHeader headerName="CamelHttpPath">
+                <simple>/v1/channels/bne/legacy/authenticate/login</simple>
+            </setHeader>
+
+            <setHeader headerName="CamelHttpMethod">
+                <simple>DELETE</simple>
+            </setHeader>
+
+            <removeHeaders pattern="*" excludePattern="Accept|Accept-Language|Authorization|Businesscode|CamelHttpMethod|CamelHttpPath|channelId|client_id|Content-Type|Countrycode|sid|uuid|Sid|Uuid|SID|UUID"/>
+            <to uri="direct:/v1/baseuri"/>
+            <process ref="safetyCloseSession" />
+        </route>
+
+        <route id="mx.com.bne.customer.authenticate.create.login">
+            <from uri="direct:/v1/login/session"/>
+            <removeHeaders pattern="*" excludePattern="Accept|Accept-Language|Authorization|Businesscode|BackbaseUserLocation|CamelHttpMethod|CamelHttpPath|cnnMobile|channelId|client_id|Content-Type|Countrycode|mobile|sid|uuid|Sid|Uuid|SID|UUID"/>
+            <!-- save payload -->
+            <setProperty propertyName="originalPayload">
+                <simple>${body}</simple>
+            </setProperty>
+
+            <setHeader headerName="Content-Type">
+                <simple>application/x-www-form-urlencoded</simple>
+            </setHeader>
+
+            <setHeader headerName="CamelHttpMethod">
+                <simple>POST</simple>
+            </setHeader>
+            <setHeader headerName="cnnMobile">
+                <simple>true</simple>
+            </setHeader>
+            <setHeader headerName="mobile">
+                <simple>true</simple>
+            </setHeader>
+
+            <bean ref="manageSession" method="createSession"/>
+            <to uri="{{citibanamex.bne.server.adapted}}://{{citibanamex.bne.path.server.backbase}}"/>
+            <bean ref="bodyLogger" method="request"/>
+            <!-- restore payload -->
+            <setBody>
+                <simple>${property.originalPayload}</simple>
+            </setBody>
+
+        </route>
+
+        <route id="mx.com.bne.keep.alive">
+            <from uri="restlet:/api/v1/private/keep/alive?restletMethod=GET" />
+            <to uri="direct:/v1/headers/login"/>
+            <setBody>
+                <simple>
+                    {
+                    "usuario": "550000002",
+                    "password": "123456789",
+                    "route":"New Route"
+                    }
+                </simple>
+            </setBody>
+        </route>
+
+    </camelContext>
+    <!-- </camel:routeContext> -->
+</beans>

@@ -1,0 +1,88 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+    <camel:routeContext id="com.backbase.portal.integration.service.bne.dummy"
+                        xmlns="http://camel.apache.org/schema/spring">
+        <route id="mx.com.bne.dummy">
+            <from uri="restlet:/mobile/v1/dummy?restletMethod=POST" />
+            <to uri="direct:/v1/headers/login"/>
+            <setHeader headerName="CamelHttpPath">
+                <simple>/dummy</simple>
+            </setHeader>
+            <setBody>
+                <simple>
+                    {
+                    "usuario": "550000001",
+                    "password": "123456789","route":"New Route"
+                    }
+                </simple>
+            </setBody>
+            <bean ref="setCommonHeaders" method="completeHeaders"/>
+            <setHeader headerName="Set-Cookie">
+                <simple>CITI_SITE=mx3885m; Path=/; HttpOnly</simple>
+            </setHeader>
+        </route>
+
+        <route id="mx.com.bne.dummy.header.exchange">
+            <from uri="restlet:/mobile/v1/dummy/headers?restletMethod=POST" />
+            <to uri="direct:/v1/headers/login"/>
+            <setHeader headerName="CamelHttpPath">
+                <simple>/dummy</simple>
+            </setHeader>
+            <setBody>
+                <simple>
+                    {
+                    "usuario": "550000001",
+                    "password": "123456789","route":"Tue Oct 23 21:55:26 CDT 2018"
+                    }
+                </simple>
+            </setBody>
+            <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+                <constant>499</constant>
+            </setHeader>
+        </route>
+
+        <route id="mx.com.bne.dummy.header.camel">
+            <from uri="restlet:/mobile/v1/dummy/headers/camel?restletMethod=POST" />
+            <to uri="direct:/v1/headers/login"/>
+            <setHeader headerName="CamelHttpPath">
+                <simple>/dummy</simple>
+            </setHeader>
+            <setBody>
+                <simple>
+                    {
+                    "usuario": "550000001",
+                    "password": "123456789","route":"Tue Oct 23 21:55:26 CDT 2018"
+                    }
+                </simple>
+            </setBody>
+            <setHeader headerName="CamelHttpResponseCode">
+                <constant>499</constant>
+            </setHeader>
+
+        </route>
+
+        <route id="mx.com.bne.generic.route.camel">
+            <from uri="restlet:/mobile/v1/dummy/generic/path?restletMethods=POST,PUT,DELETE,GET&amp;restletBinding=#queryStringToHeadersRestletBinding"/>
+            <removeHeaders pattern="CamelHttp*" excludePattern="CamelHttpMethod"/>
+            <setHeader headerName="CamelHttpPath">
+                <simple>${header.path}</simple>
+            </setHeader>
+            <to uri="direct:/v1/baseuri/login"/>
+        </route>
+
+        <route id="mx.com.bne.generic.route.camel.headers">
+            <from uri="restlet:/mobile/v2/dummy/generic/path?restletMethods=POST,PUT,DELETE,GET&amp;restletBinding=#queryStringToHeadersRestletBinding"/>
+            <to uri="direct:/v1/headers/login"/>
+            <setHeader headerName="CamelHttpPath">
+                <simple>${header.path}</simple>
+            </setHeader>
+            <to uri="direct:/v1/baseuri/login"/>
+        </route>
+
+    </camel:routeContext>
+</beans>

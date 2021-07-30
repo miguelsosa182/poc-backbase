@@ -1,0 +1,44 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <!-- <camel:routeContext id="com.backbase.portal.integration.service.bne.poc"
+                        xmlns="http://camel.apache.org/schema/spring">  -->
+
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
+      <route id="mx.com.bne.get.items">
+            <from uri="restlet:/api/v1/private/get/items?restletMethod=GET" />
+            <!--  <to uri="direct:/v1/get/items"/>-->
+            <setBody>
+                <simple>
+                    {
+                           "cuenta":{
+                               "numero":12345,
+                               "descripcion":"Cuenta de Nomina",
+                               "saldo": 150000
+                           },
+                           "pago":{
+                               "numeroPago":33333,
+                               "montoPago":100000,
+                               "descripcionPago": "Colegiatura de la escuela de los hijos"
+                           },
+                           "transferencia":{
+                              "numeroTransf":87,
+                              "montoTransf":250,
+                              "descripcionTransf:"Vigilancia y recoleccion de basura"
+                               
+                           },
+                           "autorizacion":{
+                               "numeroAutorizacion": 956,
+                               "estatusAutorizacion": "Aprobada"
+                           
+                           }
+                    }
+                </simple>
+            </setBody>
+        </route>
+    </camelContext>
+    <!--  </camel:routeContext> -->
+</beans>

@@ -30,7 +30,6 @@ public class PocBackbaseApplication {
 		servletRegistrationBean.setInitParameters(initParams);
 		servletRegistrationBean.setName("RestletServlet");
 		servletRegistrationBean.setLoadOnStartup(1);
-		System.out.println("Este es el servlet---" + servletRegistrationBean.getServletName());
 		return servletRegistrationBean;
 	}
 

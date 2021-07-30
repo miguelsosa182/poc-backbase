@@ -14,27 +14,32 @@
             <setBody>
                 <simple>
                     {
-                           "cuenta":{
-                               "numero":12345,
-                               "descripcion":"Cuenta de Nomina",
-                               "saldo": 150000
-                           },
-                           "pago":{
-                               "numeroPago":33333,
-                               "montoPago":100000,
-                               "descripcionPago": "Colegiatura de la escuela de los hijos"
-                           },
-                           "transferencia":{
-                              "numeroTransf":87,
-                              "montoTransf":250,
-                              "descripcionTransf:"Vigilancia y recoleccion de basura"
-                               
-                           },
-                           "autorizacion":{
-                               "numeroAutorizacion": 956,
-                               "estatusAutorizacion": "Aprobada"
-                           
-                           }
+                    "cards":[
+                    {
+                    "titulo":"Cuenta",
+                    "id":"1",
+                    "amount": 150000,
+                    "descripcion":"Cuenta de nomina"
+                    },
+                    {
+                    "titulo":"Pago",
+                    "id":"2",
+                    "amount": 150000,
+                    "descripcion":"Cuenta de pago"
+                    },
+                    {
+                    "titulo":"Transferencia",
+                    "id":"3",
+                    "amount": 150000,
+                    "descripcion":"Transferencias"
+                    },
+                    {
+                    "titulo":"Autorizacion",
+                    "id":"4",
+                    "amount": 150000,
+                    "descripcion":"Autorizaciones"
+                    }
+                    ]
                     }
                 </simple>
             </setBody>

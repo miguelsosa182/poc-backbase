@@ -12,8 +12,11 @@ import org.restlet.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 @SpringBootApplication
-@ImportResource("classpath:backbase-integration-service.xml")
+//@ImportResource("classpath:backbase-integration-service.xml")
+@ImportResource("classpath:prueba.xml")
 public class PocBackbaseApplication {
 
 	public static void main(String[] args) {
